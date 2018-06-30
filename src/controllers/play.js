@@ -116,7 +116,7 @@ class PlayController {
 
 		this.lovesText = game.phaser.add.text(500, 280, "Loves", {
 			font: "36px slkscr",
-			fill: "#ffffff",
+			fill: "#db3ffd",
 			stroke: "#000000",
 			strokeThickness: 4,
 			align: "right"
@@ -332,8 +332,20 @@ class PlayController {
 		this.player.update();
 
 		for(let f of this.food) {
-			if (game.utils.dist(this.player.sprite.x, this.player.sprite.y, f.sprite.x, f.sprite.y) < 35) {
+			if (!f.pickedUp && game.utils.dist(this.player.sprite.x, this.player.sprite.y, f.sprite.x, f.sprite.y) < 35) {
 				f.pickup();
+				if (f.typ.id == this.hates.id) {
+					game.utils.textEffect(this.player.sprite.x, this.player.sprite.y, "#ff0000", "GROSS");
+				}
+
+				if (f.typ.id == this.allergicTo.id) {
+					game.utils.textEffect(this.player.sprite.x, this.player.sprite.y, "#00ff00", "EWWWW");
+				}
+
+				if (f.typ.id == this.loves.id) {
+					game.utils.textEffect(this.player.sprite.x, this.player.sprite.y, "#db3ffd" , "YUM");
+				}
+
 				this.uiGroup.bringToTop(this.uiLid)
 				this.openLid();
 			}
