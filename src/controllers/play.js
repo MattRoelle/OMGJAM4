@@ -29,8 +29,8 @@ class PlayController {
 		this.uiPot = game.phaser.add.sprite(18, 420, "pot");
 		this.uiLid = game.phaser.add.sprite(18, 390, "lid");
 
-		this.altMeter = game.phaser.add.sprite(61, 80, "alt-meter");
-		this.altMarker = game.phaser.add.sprite(81, 58, "alt-marker");
+		this.altMeter = game.phaser.add.sprite(91, 80, "alt-meter");
+		this.altMarker = game.phaser.add.sprite(111, 58, "alt-marker");
 		this.altitude = 12000;
 		this.startTime = game.phaser.time.now;
 
@@ -86,6 +86,60 @@ class PlayController {
 			align: "center"
 		});
 		this.uiGroup.addChild(this.altText);
+
+		const pickedAlready = [];
+		this.hates = FOOD[Math.floor(Math.random() * FOOD.length)];
+		pickedAlready.push(this.hates);
+
+		while(pickedAlready.indexOf(this.allergicTo = FOOD[Math.floor(Math.random() * FOOD.length)]) != -1) {}
+		pickedAlready.push(this.allergicTo);
+
+		while(pickedAlready.indexOf(this.loves = FOOD[Math.floor(Math.random() * FOOD.length)]) != -1) {}
+		pickedAlready.push(this.loves);
+
+		this.criteriaSprite = game.phaser.add.sprite(30, 82, "criteria");
+		this.uiGroup.addChild(this.criteriaSprite);
+
+		this.hatesText = game.phaser.add.text(500, 230, "Hates", {
+			font: "36px slkscr",
+			fill: "#ff0040",
+			stroke: "#000000",
+			strokeThickness: 4,
+			align: "right",
+			wordWrapWidth: 500,
+		});
+		this.hatesText.anchor.set(1, 0.5);
+
+		this.hatesSprite = game.phaser.add.sprite(530, 230, this.hates.spr);
+		this.hatesSprite.anchor.set(0.5);
+		this.uiGroup.add(this.hatesSprite);
+
+		this.lovesText = game.phaser.add.text(500, 280, "Loves", {
+			font: "36px slkscr",
+			fill: "#ffffff",
+			stroke: "#000000",
+			strokeThickness: 4,
+			align: "right"
+		});
+		this.lovesText.anchor.set(1, 0.5);
+
+		this.lovesSprite = game.phaser.add.sprite(530, 280, this.loves.spr);
+		this.lovesSprite.anchor.set(0.5);
+		this.uiGroup.add(this.lovesSprite);
+
+		this.allergicText = game.phaser.add.text(500, 330, "Allergic to", {
+			font: "36px slkscr",
+			fill: "#99e65f",
+			stroke: "#000000",
+			strokeThickness: 4,
+			align: "right"
+		});
+		this.allergicText.anchor.set(1, 0.5);
+
+		this.allergicSprite = game.phaser.add.sprite(530, 335, this.allergicTo.spr);
+		this.allergicSprite.anchor.set(0.5);
+		this.uiGroup.add(this.allergicSprite);
+		
 	}
 
 	openLid() {
@@ -185,6 +239,31 @@ class PlayController {
 		if (this.planeCentered) {
 			this.state = PLAY_STATES.FALLING;
 
+			game.phaser.add.tween(this.hatesText)
+			.to({ alpha: 0 },
+				700, "Quad.easeOut", true, 0);
+
+			game.phaser.add.tween(this.lovesText)
+			.to({ alpha: 0 },
+				700, "Quad.easeOut", true, 0);
+
+			game.phaser.add.tween(this.allergicText)
+			.to({ alpha: 0 },
+				700, "Quad.easeOut", true, 0);
+
+			game.phaser.add.tween(this.hatesSprite)
+			.to({ x: 52, y: 100 },
+				700, "Quad.easeOut", true, 0);
+
+
+			game.phaser.add.tween(this.lovesSprite)
+			.to({ x: 52, y: 150 },
+				700, "Quad.easeOut", true, 0);
+
+			game.phaser.add.tween(this.allergicSprite)
+			.to({ x: 52, y: 200 },
+				700, "Quad.easeOut", true, 0);
+
 			game.phaser.camera.shake(0.5, 500);
 
 			this.startTime = game.phaser.time.now;
@@ -228,7 +307,7 @@ class PlayController {
 		const dt = t - this.startTime;
 
 		this.altText.text = this.altitude + " ft";
-		this.altitude = Math.floor(12000 - (dt*0.3));
+		this.altitude = Math.floor(12000 - (dt*0.4));
 		this.altMarker.y = 58 + ((1 - (this.altitude/12000))*265);
 
 		for(let f of this.foodExplosion) {
@@ -278,7 +357,7 @@ class PlayController {
 			this.player.emitter2.destroy();
 
 			game.phaser.add.tween(this.player.sprite)
-			.to({ x: 450, y: 450, angle: 0 },
+			.to({ x: 480, y: 480, angle: 0 },
 				3000, "Quad.easeOut", true, 0)
 
 			.onComplete.add(() => {
@@ -288,7 +367,7 @@ class PlayController {
 				let j = 0;
 				for(let f of this.food) {
 					if (f.pickedUp) { 
-						if (!nTypes[f.typ.id]) nTypes[f.typ.id] = { ord: j++, n: 1 };
+						if (!nTypes[f.typ.id]) nTypes[f.typ.id] = { ord: j++, n: 1, f: f };
 						else nTypes[f.typ.id].n++;
 
 						const countInfo = nTypes[f.typ.id];
@@ -305,16 +384,59 @@ class PlayController {
 					}
 				}
 
-				for(let k in nTypes) {
-					const countInfo = nTypes[k];
-					const txt = game.phaser.add.text(240, 32 + (countInfo.ord*40), countInfo.n.toString(), {
-						font: "26px slkscr",
+				this.finalScore = 0;
+
+				setTimeout(() => {
+					for(let k in nTypes) {
+						const countInfo = nTypes[k];
+						const txt = game.phaser.add.text(240, 32 + (countInfo.ord*40), countInfo.n.toString(), {
+							font: "26px slkscr",
+							fill: "#ffffff",
+							stroke: "#000000",
+							strokeThickness: 4,
+							align: "left"
+						});
+
+						let score = countInfo.n * 100;
+						let color = "#ffffff";
+
+						if (this.hates.id == k) {
+							score *= -2;
+							color = "#ff0040";
+						}
+
+						if (this.allergicTo.id == k) {
+							score *= -4;
+							color = "#99e65f";
+						}
+
+						if (this.loves.id == k) {
+							score *= 3;
+							color = "#db3ffd";
+						}
+
+						this.finalScore += score;
+
+						const scoreTxt = game.phaser.add.text(540, 32 + (countInfo.ord*40), score, {
+							font: "26px slkscr",
+							fill: color,
+							stroke: "#000000",
+							strokeThickness: 4,
+							align: "left"
+						});
+					}
+
+					this.finalScoreText = game.phaser.add.text(480, 390, this.finalScore, {
+						font: "44px slkscr",
 						fill: "#ffffff",
 						stroke: "#000000",
 						strokeThickness: 4,
 						align: "left"
 					});
-				}
+					this.finalScoreText.anchor.set(0.5);
+					this.finalScoreText.pivot.set(0.5);
+
+				}, 1000);
 			}, this);
 
 

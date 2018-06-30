@@ -65,6 +65,21 @@ class Game {
 		this.audio.toggleMute();
 
 		game.phaser.stage.backgroundColor = "#121212";
+
+
+		this.globalGroup = game.phaser.add.group();
+		this.fullscreenText = game.phaser.add.text(610, 550, "FULLSCREEN", {
+			font: "20px slkscr",
+			fill: "#ffffff",
+			stroke: "#000000",
+			strokeThickness: 4,
+			align: "left"
+		});
+		this.fullscreenText.inputEnabled = true;
+		this.fullscreenText.events.onInputDown.add(() => {
+			this.fullscreen();
+		}, this);
+		this.globalGroup.addChild(this.fullscreenText);
 	}
 
 	fadeOut(cb) {
@@ -126,6 +141,9 @@ class Game {
 		if (this.controller) this.controller.update();
 		this.input.update();
 		this.phaser.debug.text(this.phaser.time.fps || '--', 700, 14, "#00ff00"); 
+		this.fullscreenText.bringToTop();
+		game.phaser.world.bringToTop(this.globalGroup);
+		this.globalGroup.bringToTop(this.fullscreenText);
 	}
 
 	render() {

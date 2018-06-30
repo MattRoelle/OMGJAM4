@@ -28,6 +28,8 @@ class Loader {
 		g.load.image("cloud1", "assets/export-cloud1.png");
 
 		g.load.image("ground1", "assets/export-ground1.png");
+
+		g.load.image("criteria", "assets/export-criteria.png");
 	}
 }
 
