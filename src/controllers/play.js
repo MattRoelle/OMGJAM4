@@ -311,9 +311,9 @@ class PlayController {
 		this.altMarker.y = 58 + ((1 - (this.altitude/12000))*265);
 
 		for(let f of this.foodExplosion) {
-			f.x += f.velocity.x;
-			f.y += f.velocity.y;
-			f.angle += 8;
+			f.x += f.velocity.x * game.deltaTime;
+			f.y += f.velocity.y * game.deltaTime;
+			f.angle += 8 * game.deltaTime;
 		}
 
 		for(let c of this.clouds) {
@@ -523,8 +523,8 @@ class Player {
 			this.velocity.y -= 0.2;
 		}
 
-		this.sprite.position.x += this.velocity.x;
-		this.sprite.position.y += this.velocity.y;
+		this.sprite.position.x += this.velocity.x*game.deltaTime;
+		this.sprite.position.y += this.velocity.y*game.deltaTime;
 
 		this.sprite.position.x = Math.max(this.sprite.position.x, 174);
 		this.sprite.position.x = Math.min(this.sprite.position.x, 800 - 32);
@@ -597,8 +597,8 @@ class Food {
 	update(landing) {
 		if (this.pickedUp) {
 		} else {
-			this.sprite.position.y += this.speed;
+			this.sprite.position.y += this.speed*game.deltaTime;
 		}
-		this.sprite.angle += this.rotationSpeed;
+		this.sprite.angle += this.rotationSpeed*game.deltaTime;
 	}
 }

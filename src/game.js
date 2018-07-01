@@ -15,6 +15,8 @@ class Game {
 			update: this.update.bind(this),
 			render: this.render.bind(this)
 		};
+		
+		this.deltaTime = 1;
 
 		this.input = new Input();
 		this.utils = new Utils();
@@ -138,6 +140,7 @@ class Game {
 	}
 
 	update() {
+		this.deltaTime = (this.phaser.time.elapsed/(1000/60)) ;
 		if (this.controller) this.controller.update();
 		this.input.update();
 		this.phaser.debug.text(this.phaser.time.fps || '--', 700, 14, "#00ff00"); 
