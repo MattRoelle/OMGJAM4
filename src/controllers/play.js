@@ -20,6 +20,8 @@ const PLAY_STATES = {
 
 class PlayController {
 	constructor(params) {
+		game.audio.startMusic();
+
 		this.destroyables = [];
 		
 		this.uiGroup = game.phaser.add.group();
@@ -341,7 +343,7 @@ class PlayController {
 					game.audio.playSfx(SFX_TYPES.BADPICKUP);
 				} else  if (f.typ.id == this.loves.id) {
 					game.utils.textEffect(this.player.sprite.x, this.player.sprite.y, "#5ac54f" , "YUM");
-					game.audio.playSfx(SFX_TYPES.PICKUP1);
+					game.audio.playSfx(SFX_TYPES.PICKUP2);
 				} else {
 					game.audio.playSfx(SFX_TYPES.PICKUP1);
 				}

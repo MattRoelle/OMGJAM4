@@ -65,8 +65,6 @@ class Game {
 
 		this.switchState(GAME_STATES.TITLE);
 		
-		this.audio.toggleMute();
-
 		game.phaser.stage.backgroundColor = "#121212";
 
 		this.globalGroup = game.phaser.add.group();
@@ -82,6 +80,26 @@ class Game {
 			this.fullscreen();
 		}, this);
 		this.globalGroup.addChild(this.fullscreenText);
+
+		this.muteText = game.phaser.add.text(770, 510, "MUTE", {
+			font: "20px slkscr",
+			fill: "#ffffff",
+			stroke: "#000000",
+			strokeThickness: 4,
+			align: "right"
+		});
+		this.muteText.anchor.set(1, 0);
+		this.muteText.inputEnabled = true;
+		this.muteText.events.onInputDown.add(() => {
+			this.audio.toggleMute();
+			if (this.audio.muted) {
+				this.muteText.text = "UNMUTE";
+			} else {
+				this.muteText.text = "MUTE";
+			}
+		}, this);
+		this.globalGroup.addChild(this.muteText);
+
 	}
 
 	fadeOut(cb) {
@@ -143,7 +161,7 @@ class Game {
 		this.deltaTime = (this.phaser.time.elapsed/(1000/60)) ;
 		if (this.controller) this.controller.update();
 		this.input.update();
-		this.phaser.debug.text(this.phaser.time.fps || '--', 700, 14, "#00ff00"); 
+		//this.phaser.debug.text(this.phaser.time.fps || '--', 700, 14, "#00ff00"); 
 		this.fullscreenText.bringToTop();
 		game.phaser.world.bringToTop(this.globalGroup);
 		this.globalGroup.bringToTop(this.fullscreenText);

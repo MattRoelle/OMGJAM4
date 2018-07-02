@@ -1,5 +1,7 @@
 class TitleController {
 	constructor() {
+		this.playedSfx = false;
+		game.audio.startMainMenuMusic();
 		this.destroyables = [];
 		this.bg = game.phaser.add.tileSprite(0, 0, 800, 600, "title");
 		this.destroyables.push(this.bg);
@@ -131,8 +133,10 @@ class TitleController {
 		this.subLogoSprite.bringToTop();
 		this.beginText.bringToTop();
 
-		if (game.phaser.time.now - this.started > 750 && game.input.isJumpDown()) {
+		if (game.phaser.time.now - this.started > 750 && game.input.isJumpDown() && !this.playedSfx) {
+			this.playedSfx = true;
 			game.switchState(GAME_STATES.IN_GAME);
+			game.audio.playSfx(SFX_TYPES.PICKUP2);
 		}
 	}
 

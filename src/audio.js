@@ -3,6 +3,10 @@ const SFX_TYPES = {
 		key: "pickup1",
 		volume: 0.2
 	},
+	PICKUP2: { 
+		key: "pickup2",
+		volume: 0.15
+	},
 	BADPICKUP: { 
 		key: "badpickup",
 		volume: 0.2
@@ -24,24 +28,30 @@ class GameAudio {
 		this.music.play();
 	}
 
-	pauseMusic() {
-		if (this.music) {
-			this.music.pause();
-		}
-	}
-
 	startMusic() {
+		if (!!this.music) {
+			this.music.destroy();
+		}
 		this.music = game.phaser.add.audio("theme");
 		this.music.loop = true;
 		this.music.volume = 0.45;
 		this.playMusic();
 	}
 
+	startMainMenuMusic() {
+		if (!!this.music) {
+			this.music.destroy();
+		}
+		this.music = game.phaser.add.audio("mainmenu");
+		this.music.loop = true
+		this.music.volume = 0.35;
+		this.playMusic();
+	}
+
 	playSfx(s) {
-		/*
+		console.log(this.muted, game.phaser.sound.volume);
 		const sfx = game.phaser.add.audio(s.key);
 		sfx.volume = s.volume;
 		sfx.play();
-		*/
 	}
 }
