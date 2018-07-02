@@ -522,15 +522,15 @@ class Player {
 
 	update() {
 		if (game.input.left()) {
-			this.velocity.x -= 0.2;
+			this.velocity.x -= 0.2*game.deltaTime;
 		} else if (game.input.right()) {
-			this.velocity.x += 0.2;
+			this.velocity.x += 0.2*game.deltaTime;
 		}
 
 		if (game.input.down()) {
-			this.velocity.y += 0.2;
+			this.velocity.y += 0.2*game.deltaTime;
 		} else if (game.input.up()) {
-			this.velocity.y -= 0.2;
+			this.velocity.y -= 0.2*game.deltaTime;
 		}
 
 		this.sprite.position.x += this.velocity.x*game.deltaTime;
