@@ -29,8 +29,8 @@ class PlayController {
 		this.uiPot = game.phaser.add.sprite(18, 420, "pot");
 		this.uiLid = game.phaser.add.sprite(18, 390, "lid");
 
-		this.altMeter = game.phaser.add.sprite(91, 80, "alt-meter");
-		this.altMarker = game.phaser.add.sprite(111, 58, "alt-marker");
+		this.altMeter = game.phaser.add.sprite(101, 80, "alt-meter");
+		this.altMarker = game.phaser.add.sprite(121, 58, "alt-marker");
 		this.altitude = 12000;
 		this.startTime = game.phaser.time.now;
 
@@ -97,12 +97,25 @@ class PlayController {
 		while(pickedAlready.indexOf(this.loves = FOOD[Math.floor(Math.random() * FOOD.length)]) != -1) {}
 		pickedAlready.push(this.loves);
 
-		this.criteriaSprite = game.phaser.add.sprite(30, 82, "criteria");
+		this.criteriaSprite = game.phaser.add.sprite(12, 82, "criteria");
 		this.uiGroup.addChild(this.criteriaSprite);
 
-		this.hatesText = game.phaser.add.text(500, 230, "Hates", {
+		this.lovesText = game.phaser.add.text(500, 230, "Loves", {
 			font: "36px slkscr",
-			fill: "#ff0040",
+			fill: "#5ac54f",
+			stroke: "#000000",
+			strokeThickness: 4,
+			align: "right"
+		});
+		this.lovesText.anchor.set(1, 0.5);
+
+		this.lovesSprite = game.phaser.add.sprite(530, 230, this.loves.spr);
+		this.lovesSprite.anchor.set(0.5);
+		this.uiGroup.add(this.lovesSprite);
+
+		this.hatesText = game.phaser.add.text(500, 280, "Hates", {
+			font: "36px slkscr",
+			fill: "#ffc825",
 			stroke: "#000000",
 			strokeThickness: 4,
 			align: "right",
@@ -110,26 +123,13 @@ class PlayController {
 		});
 		this.hatesText.anchor.set(1, 0.5);
 
-		this.hatesSprite = game.phaser.add.sprite(530, 230, this.hates.spr);
+		this.hatesSprite = game.phaser.add.sprite(530, 280, this.hates.spr);
 		this.hatesSprite.anchor.set(0.5);
 		this.uiGroup.add(this.hatesSprite);
 
-		this.lovesText = game.phaser.add.text(500, 280, "Loves", {
-			font: "36px slkscr",
-			fill: "#db3ffd",
-			stroke: "#000000",
-			strokeThickness: 4,
-			align: "right"
-		});
-		this.lovesText.anchor.set(1, 0.5);
-
-		this.lovesSprite = game.phaser.add.sprite(530, 280, this.loves.spr);
-		this.lovesSprite.anchor.set(0.5);
-		this.uiGroup.add(this.lovesSprite);
-
 		this.allergicText = game.phaser.add.text(500, 330, "Allergic to", {
 			font: "36px slkscr",
-			fill: "#99e65f",
+			fill: "#ff0040",
 			stroke: "#000000",
 			strokeThickness: 4,
 			align: "right"
@@ -205,7 +205,7 @@ class PlayController {
 
 		const e = Math.max(0, (1 - (dt/2000)));
 
-		this.background.tilePosition.y -= 3 * e;
+		this.background.tilePosition.y -= 3 * e * game.deltaTime;
 
 		this.gameGroup.bringToTop(this.player.sprite);
 	}
@@ -251,17 +251,16 @@ class PlayController {
 			.to({ alpha: 0 },
 				700, "Quad.easeOut", true, 0);
 
-			game.phaser.add.tween(this.hatesSprite)
-			.to({ x: 52, y: 100 },
+			game.phaser.add.tween(this.lovesSprite)
+			.to({ x: 80, y: 95 },
 				700, "Quad.easeOut", true, 0);
 
-
-			game.phaser.add.tween(this.lovesSprite)
-			.to({ x: 52, y: 150 },
+			game.phaser.add.tween(this.hatesSprite)
+			.to({ x: 80, y: 155 },
 				700, "Quad.easeOut", true, 0);
 
 			game.phaser.add.tween(this.allergicSprite)
-			.to({ x: 52, y: 200 },
+			.to({ x: 80, y: 208 },
 				700, "Quad.easeOut", true, 0);
 
 			game.phaser.camera.shake(0.5, 500);
@@ -335,15 +334,16 @@ class PlayController {
 			if (!f.pickedUp && game.utils.dist(this.player.sprite.x, this.player.sprite.y, f.sprite.x, f.sprite.y) < 35) {
 				f.pickup();
 				if (f.typ.id == this.hates.id) {
-					game.utils.textEffect(this.player.sprite.x, this.player.sprite.y, "#ff0000", "GROSS");
-				}
-
-				if (f.typ.id == this.allergicTo.id) {
-					game.utils.textEffect(this.player.sprite.x, this.player.sprite.y, "#00ff00", "EWWWW");
-				}
-
-				if (f.typ.id == this.loves.id) {
-					game.utils.textEffect(this.player.sprite.x, this.player.sprite.y, "#db3ffd" , "YUM");
+					game.utils.textEffect(this.player.sprite.x, this.player.sprite.y, "#ffc825", "GROSS");
+					game.audio.playSfx(SFX_TYPES.BADPICKUP);
+				} else if (f.typ.id == this.allergicTo.id) {
+					game.utils.textEffect(this.player.sprite.x, this.player.sprite.y, "#ff0040", "EWWWW");
+					game.audio.playSfx(SFX_TYPES.BADPICKUP);
+				} else  if (f.typ.id == this.loves.id) {
+					game.utils.textEffect(this.player.sprite.x, this.player.sprite.y, "#5ac54f" , "YUM");
+					game.audio.playSfx(SFX_TYPES.PICKUP1);
+				} else {
+					game.audio.playSfx(SFX_TYPES.PICKUP1);
 				}
 
 				this.uiGroup.bringToTop(this.uiLid)
@@ -414,17 +414,17 @@ class PlayController {
 
 						if (this.hates.id == k) {
 							score *= -2;
-							color = "#ff0040";
+							color = "#ffc825";
 						}
 
 						if (this.allergicTo.id == k) {
 							score *= -4;
-							color = "#99e65f";
+							color = "#c42430";
 						}
 
 						if (this.loves.id == k) {
 							score *= 3;
-							color = "#db3ffd";
+							color = "#5ac54f";
 						}
 
 						this.finalScore += score;
@@ -449,6 +449,10 @@ class PlayController {
 					this.finalScoreText.pivot.set(0.5);
 
 				}, 1000);
+
+				setTimeout(() => {
+					game.switchState(GAME_STATES.TITLE);
+				}, 6000);
 			}, this);
 
 
@@ -473,6 +477,12 @@ class PlayController {
 
 	destroy() {
 		for(let d of this.destroyables) d.destroy();
+		for(let c of this.uiGroup.children) {
+			c.destroy();
+		}
+		for(let c of this.gameGroup.children) {
+			c.destroy();
+		}
 	}
 }
 

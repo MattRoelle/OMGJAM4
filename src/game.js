@@ -4,6 +4,7 @@ const GAME_STATES = {
 };
 
 const controllerCtorLookup = {
+	[GAME_STATES.TITLE]: TitleController,
 	[GAME_STATES.IN_GAME]: PlayController,
 };
 
@@ -62,12 +63,11 @@ class Game {
 				this.pixelateFilter
 		];
 
-		this.switchState(GAME_STATES.IN_GAME);
+		this.switchState(GAME_STATES.TITLE);
 		
 		this.audio.toggleMute();
 
 		game.phaser.stage.backgroundColor = "#121212";
-
 
 		this.globalGroup = game.phaser.add.group();
 		this.fullscreenText = game.phaser.add.text(610, 550, "FULLSCREEN", {

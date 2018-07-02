@@ -30,6 +30,17 @@ class Loader {
 		g.load.image("ground1", "assets/export-ground1.png");
 
 		g.load.image("criteria", "assets/export-criteria.png");
+
+		g.load.image("title", "assets/export-title.png");
+
+		g.load.image("logo", "assets/export-logo.png");
+		g.load.image("sublogo", "assets/export-sublogo.png");
+
+		/*
+		g.load.audio("theme", ["assets/audio/theme.wav"]);
+		g.load.audio("pickup1", ["assets/audio/pickup1.wav"]);
+		g.load.audio("badpickup", ["assets/audio/badpickup.wav"]);
+		*/
 	}
 }
 
